@@ -14,6 +14,10 @@ struct vector3 {
     vector3 operator*(double rhs) const {
         return vector3{this->x * rhs, this->y * rhs, this->z * rhs};
     }
+
+    friend std::ostream &operator<<(std::ostream &os, const vector3 &v) {
+        return os << v.x << "," << v.y << "," << v.z;
+    }
 };
 
 class lorenz_system {
@@ -47,11 +51,11 @@ int main() {
     const double time_end = 75;
 
     std::ofstream points_file("points.txt");
-    points_file << state.x << "," << state.y << "," << state.z << "\n";
+    points_file << state << "\n";
     // solve ODEs w/ Euler's method
     for (int i = 1; i < time_end / step; ++i) {
         vector3 change = lorenz(state) * step;
         state += change;
-        points_file << state.x << "," << state.y << "," << state.z << "\n";
+        points_file << state << "\n";
     }
 }
