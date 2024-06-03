@@ -3,11 +3,6 @@
 struct vector3 {
     double x, y, z;
 
-    // scalar multiplication
-    vector3 operator*(double rhs) const {
-        return {x * rhs, y * rhs, z * rhs};
-    };
-
     vector3 &operator+=(const vector3 &rhs) {
         x += rhs.x;
         y += rhs.y;
@@ -19,6 +14,13 @@ struct vector3 {
         return os << v.x << "," << v.y << "," << v.z;
     }
 };
+
+vector3 operator*(double scalar, const vector3 &v) {
+    return {scalar * v.x, scalar * v.y, scalar * v.z};
+}
+vector3 operator+(const vector3 &lhs, const vector3 &rhs) {
+    return {lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z};
+}
 
 
 class lorenz_system {
@@ -49,6 +51,21 @@ int main(int argc, char *argv[]) {
     // initial conditions
     vector3 state = {1.0, 1.0, 1.0};
 
+    const double step = 0.1;
+
+    points << state << "\n";
+    for (int n = 1; n < std::ceil(1000 / step); ++n) {
+        // RK4
+        vector3 k1 = step * lorenz(state);
+        vector3 k2 = step * lorenz(state + 0.5 * step * k1);
+        vector3 k3 = step * lorenz(state + 0.5 * step * k2);
+        vector3 k4 = step * lorenz(state + step * k3);
+        vector3 change = (step / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+        state += change;
+        points << state << "\n";
+    }
+
+    /*
     const double step = 0.001;
 
     points << state << "\n";
@@ -58,4 +75,5 @@ int main(int argc, char *argv[]) {
         state += change;
         points << state << "\n";
     }
+    */
 }
