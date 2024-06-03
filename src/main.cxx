@@ -51,15 +51,15 @@ int main(int argc, char *argv[]) {
     // initial conditions
     vector3 state = {1.0, 1.0, 1.0};
 
-    const double step = 0.1;
+    const double step = 0.01;
 
     points << state << "\n";
-    for (int n = 1; n < std::ceil(1000 / step); ++n) {
+    for (int n = 1; n < std::ceil(100 / step); ++n) {
         // RK4
-        vector3 k1 = step * lorenz(state);
-        vector3 k2 = step * lorenz(state + 0.5 * step * k1);
-        vector3 k3 = step * lorenz(state + 0.5 * step * k2);
-        vector3 k4 = step * lorenz(state + step * k3);
+        vector3 k1 = lorenz(state);
+        vector3 k2 = lorenz(state + step * 0.5 * k1);
+        vector3 k3 = lorenz(state + step * 0.5 * k2);
+        vector3 k4 = lorenz(state + step * k3);
         vector3 change = (step / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
         state += change;
         points << state << "\n";
