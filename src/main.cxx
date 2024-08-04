@@ -43,6 +43,24 @@ public:
     }
 };
 
+class rossler_system {
+    const double m_a, m_b, m_c;
+
+public:
+    rossler_system(double a = 0.1, double b = 0.1, double c = 14)
+        : m_a{a}
+        , m_b{b}
+        , m_c{c} { }
+
+    vector3 operator()(const vector3 &s) const {
+        return {
+            .x = -s.y - s.z,
+            .y = s.x + m_a * s.y,
+            .z = m_b + s.z * (s.x - m_c)
+        };
+    }
+};
+
 int main(int argc, char *argv[]) {
     std::ofstream points("points.csv");
     points << "x,y,z\n";
@@ -65,16 +83,4 @@ int main(int argc, char *argv[]) {
         state += change;
         points << state << "\n";
     }
-
-    /*
-    const double step = 0.001;
-
-    points << state << "\n";
-    for (int n = 1; n < std::ceil(75 / step); ++n) {
-        // solve with Euler's method
-        vector3 change = lorenz(state) * step;
-        state += change;
-        points << state << "\n";
-    }
-    */
 }
